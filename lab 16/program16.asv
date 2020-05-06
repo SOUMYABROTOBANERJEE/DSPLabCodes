@@ -1,0 +1,42 @@
+fp=1500;
+fs=2000;
+delta_f=500;
+Fs=8000;
+n_pbf=(2*pi*fp)/Fs;
+n_sbf=(2*pi*fs)/Fs;
+n_delta_w=(2*pi*delta_f)/Fs;
+w_c=(n_pbf+n_sbf)/2;
+% With rectangular window
+M1=round(.92*pi/n_delta_w)
+N1=2*M1+1;
+for n=1:2*M1+1
+    if n==M1+1
+        h1(n)=w_c/pi
+    else
+        h1(n)=sin(w_c*(n-1-M1))/(pi*(n-1-M1))
+    end
+end
+for n=1:2*M1+1
+    w1(n)= 1
+end
+for m = 1:2*M1+1
+    h_t1(m)=h1(m).*w1(m)
+end
+
+%With Hamming window
+M2=round((3.32*pi)/n_delta_w);
+N2=2*M2+1;
+for n=1:2*M2+1
+    if n==M2+1
+        h(n)=w_c/pi
+    else 
+        h(n)=sin(w_c*(n-1-M2))/(pi*(n-1-M2))
+    end
+end
+
+for n=1:2*M2+1
+    w(n)=0.54-.46*cos((2*pi*(n-1))/(2*M2))
+end
+
+%With Blackmann window
+

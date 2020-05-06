@@ -1,0 +1,45 @@
+Fs=2000
+Fpass=700
+Fstop=500
+rp=1
+rs=30
+wp=2*pi*Fpass/Fs
+ws=2*pi*Fstop/Fs
+omega_p_hat=tan(wp/2)
+omega_s_hat=tan(ws/2)
+omega_p=1
+omega_s=abs(-omega_p*omega_p_hat/omega_s_hat)
+[N,wn]=cheb2ord(omega_p,omega_s,rp,rs,'s')
+[b,a]=cheby2(N,rs,wn,'s');
+[b1,a1]=lp2hp(b,a,omega_p_hat)
+[num,den] = bilinear(b1,a1,.5)
+
+N=512
+[H,W] = freqz(num,den,N)
+figure(1)
+plot(W/pi,20*log10(abs(H)))
+
+
+xlabel('w/pi');
+ylabel('Gain in dB');
+title('IIR Digital Filter design using analog chebychev filter');
+
+figure(2)
+plot(Fs*W/(2*pi),20*log10(abs(H)),'r-')
+xlabel('Freq');
+ylabel('Gain in dB');
+title('IIR Digital Filter design using analog elliptical filter');
+ 
+
+figure(3)
+ subplot(2,1,1)
+ plot(W/pi,20*log10(abs(H)))
+ axis([0,1,-90,0])
+ xlabel('w/pi');
+ ylabel('Gain in dB');
+ [GdH,w2]=grpdelay(num,den,512);
+ subplot(2,1,2)
+ plot(w2/pi, GdH)
+ xlabel('w2/pi');
+ ylabel('Group delay');
+ title('Group Delay in Passband');
